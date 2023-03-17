@@ -18,7 +18,7 @@ This takes in various genomes fastas and makes the primers require for STOPseq (
     - openprimeR
  - python3
     - pandas
-    - io.Seq
+    - Bio.Seq
 
 
 
