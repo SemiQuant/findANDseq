@@ -7,18 +7,21 @@ This takes in various genomes fastas and makes the primers require for STOPseq (
 
 # Installation
 
-[bowtie](https://bowtie-bio.sourceforge.net/index.shtml)
-[samtools](http://www.htslib.org/)
-[primer3](https://github.com/primer3-org/primer3)
+ - [bowtie](https://bowtie-bio.sourceforge.net/index.shtml)
+ - [samtools](http://www.htslib.org/)
+ - [primer3](https://github.com/primer3-org/primer3)
 
-[R software](https://www.r-project.org/)
-R packages
-	stringr
-	biostrings
-	openprimeR
-python3
-    pandas
-    Bio.Seq
+ - [R software](https://www.r-project.org/)
+ - R packages
+    - stringr
+    - biostrings
+    - openprimeR
+ - python3
+    - pandas
+    - io.Seq
+
+
+
 
 
 # Usage
