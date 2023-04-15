@@ -1,4 +1,5 @@
-# Find and Seq (or STOPseq or exactSeq)
+# findANDseq (or STOPseq or exactSeq)
+
 
 ![](STOPseq.png)
 

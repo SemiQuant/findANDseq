@@ -5,7 +5,6 @@
 # Would be nice to weight the backgroud genome, kind of like I am with the rRNA
 
 
-
 usage () { #echo -e to read \n
   echo "
 Usage Options
@@ -19,7 +18,7 @@ Usage Options
   -mxt|--max_tm =  maximum primer Tm (default = 80)
   -ml|--min_len = minimum primer length (default = 8)
   -ol|--opt_len = optimum primer length (default = 13)
-  -mxl|--max_len = maximum primer length (default = 20)
+  -mxl|--max_len = maximum primer length (default = 30)
   -o|--out_dir = path to output directory
   -s|--Script_dir = path to script directory
 
@@ -163,7 +162,7 @@ opt_tm=${opt_tm:-50}
 max_tm=${max_tm:-80}
 min_len=${min_len:-8}
 opt_len=${opt_len:-13}
-max_len=${max_len:-20}
+max_len=${max_len:-30}
 max_rRNA=${max_rRNA:-0}
 name="${name:-STOPseq_primers}"
 threads=${threads:-4}
@@ -202,8 +201,9 @@ Rscript "${Script_dir}/make_pmr_table.R" "$foreground" "$for_genes"
 
 
 # make primers
-while read -r id template region
+while read -r id template str len #region
 do
+    region="${str},${len}"
     primer_found=0
     if [ $primer_found -lt 1 ]
     then
@@ -217,17 +217,23 @@ do
             awk -v id=$id '{printf ">%s_%s_%s_%s_%s_%s_%s_%s_%s\n%s\n",id,$3,$4,$5,$6,$7,$8,$9,$10,$11}' "${id}.primers.tsv" >> "${name}.allPs.fasta"
             rm "${id}.primers.tsv"
         else
-            echo "trying with relaxed rRNA binding for ${id}"
-            get_primers 10
-            primer3_core --format_output < "${id}.primer.tmp" | grep "RIGHT_PRIMER" | awk 'BEGINFILE{printf " 0 "}{print}' > "${id}.primers.tsv"
-            rm "${id}.primer.tmp"
-            primer_found=$(wc -l < "${id}.primers.tsv")
+            echo "trying with relaxed binding region for ${id}"
+            region="50,$((len+str-50))"
+            get_primers $max_rRNA
             if [ $primer_found -gt 0 ]
             then
-                awk -v id=$id '{printf ">%s_%s_%s_%s_%s_%s_%s_%s_%s\n%s\n",id,$3,$4,$5,$6,$7,$8,$9,$10,$11}' "${id}.primers.tsv" >> "${name}.allPs.fasta"
-                rm "${id}.primers.tsv"
-            else
-                echo "no primer found for ${id}"
+                    echo "trying with relaxed rRNA binding for ${id}"
+                    get_primers 10
+                    primer3_core --format_output < "${id}.primer.tmp" | grep "RIGHT_PRIMER" | awk 'BEGINFILE{printf " 0 "}{print}' > "${id}.primers.tsv"
+                    rm "${id}.primer.tmp"
+                    primer_found=$(wc -l < "${id}.primers.tsv")
+                    if [ $primer_found -gt 0 ]
+                    then
+                        awk -v id=$id '{printf ">%s_%s_%s_%s_%s_%s_%s_%s_%s\n%s\n",id,$3,$4,$5,$6,$7,$8,$9,$10,$11}' "${id}.primers.tsv" >> "${name}.allPs.fasta"
+                        rm "${id}.primers.tsv"
+                    else
+                        echo "no primer found for ${id}"
+                    fi
             fi
         fi
     fi

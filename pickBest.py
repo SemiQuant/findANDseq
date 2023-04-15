@@ -18,7 +18,7 @@ df = df[~df.Align.isin(added)]
 # open file in write mode
 with open(sys.argv[1], 'w') as fp:
     for seq in primers:
-    	seq_tailed = "GCTCTTCCGATCTa" + seq.reverse_complement() + "CACTGCAGACCACTAA"
+    	seq_tailed = "CGTGTGCTCTTCCGATCTa" + seq.reverse_complement() + "CACTGCAGACCACTAA" #seq_tailed = "GCTCTTCCGATCTa" + seq.reverse_complement() + "CACTGCAGACCACTAA"
         fp.write("%s\n" % seq_tailed)
 
 
